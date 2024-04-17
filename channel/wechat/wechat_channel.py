@@ -3,7 +3,6 @@
 """
 wechat channel
 """
-
 import io
 import json
 import os
@@ -16,6 +15,7 @@ from bridge.context import *
 from bridge.reply import *
 from channel.chat_channel import ChatChannel
 from channel import chat_channel
+from channel.wechat import wechat_time_send_message
 from channel.wechat.wechat_message import *
 from common.expired_dict import ExpiredDict
 from common.log import logger
@@ -130,6 +130,9 @@ class WechatChannel(ChatChannel):
             self.name = itchat.instance.storageClass.nickName
             logger.info("Wechat login success, user_id: {}, nickname: {}".format(self.user_id, self.name))
             # start message listener
+            #增加一个定时发送给别人消息得模块
+            wechat_time_send_message.time_send_message(self)
+            # 保持运行状态，监听消息
             itchat.run()
         except Exception as e:
             logger.error(e)
